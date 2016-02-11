@@ -24,13 +24,7 @@ ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 	set -e ; for i in 2.7 ; do \
 		PYMAJOR=`echo $$i | cut -d'.' -f1` ; \
 		echo "===> Testing with python$$i (python$$PYMAJOR)" ; \
-		rm -rf .testrepository ; \
-		testr-python$$PYMAJOR init ; \
-		TEMP_REZ=`mktemp -t` ; \
-		PYTHONPATH=$(CURDIR) PYTHON=python$$i testr-python$$PYMAJOR run --subunit 'tests\.(?!.*OptsTestCase.test_entry_point.*)' | tee $$TEMP_REZ | subunit2pyunit ; \
-		cat $$TEMP_REZ | subunit-filter -s --no-passthrough | subunit-stats ; \
-		rm -f $$TEMP_REZ ; \
-		testr-python$$PYMAJOR slowest ; \
+		python$$i -m pytest shotgun/test ; \
 	done
 endif
 
