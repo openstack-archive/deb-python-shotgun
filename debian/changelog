@@ -1,5 +1,5 @@
 python-shotgun (0.1.0+2016.12.30.git.0682f20c42-1) unstable; urgency=low
 
-  * Initial release. (Closes: #XXXXXX)
+  * Initial release. (Closes: #814418)
 
  -- Thomas Goirand <zigo@debian.org>  Sun, 09 Nov 2014 22:46:45 +0800
