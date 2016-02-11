@@ -1,4 +1,4 @@
-python-shotgun (0.1.0~0+2016.12.30.git.0682f20c42-1) unstable; urgency=low
+python-shotgun (0.1.0+2016.12.30.git.0682f20c42-1) unstable; urgency=low
 
   * Initial release. (Closes: #XXXXXX)
 
