@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: shotgut
-Source: git://github.com/thomasgoirand/python-shotgun.git
+Source: https://github.com/thomasgoirand/python-shotgun
 
 Files: *
 Copyright: (c) 2014, Mirantis
