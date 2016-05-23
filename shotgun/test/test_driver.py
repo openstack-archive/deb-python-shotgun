@@ -148,10 +148,12 @@ class TestDriver(base.BaseTestCase):
         mfabrun.assert_called_with(command, stdout=mstdout)
         self.assertEqual(result.stdout, 'FULL STDOUT')
 
-    @mock.patch('shotgun.driver.utils.execute')
+    @mock.patch('os.path.exists', return_value=False)
+    @mock.patch('os.makedirs')
+    @mock.patch('shotgun.utils.execute')
     @mock.patch('shotgun.driver.fabric.api.settings')
     @mock.patch('shotgun.driver.fabric.api.get')
-    def test_driver_get(self, mfabget, mfabset, mexecute):
+    def test_driver_get(self, mfabget, mfabset, mexecute, mmakedirs, _):
         mexecute.return_value = ("RETURN_CODE", "STDOUT", "STDERR")
         remote_path = "/remote_dir/remote_file"
         target_path = "/target_dir"
@@ -165,7 +167,7 @@ class TestDriver(base.BaseTestCase):
             },
         }, conf)
         driver.get(remote_path, target_path)
-        mexecute.assert_called_with('mkdir -p "{0}"'.format(target_path))
+        mmakedirs.assert_called_once_with(target_path)
         mfabget.assert_called_with(remote_path, target_path)
 
         mfabset.assert_called_with(
@@ -173,11 +175,12 @@ class TestDriver(base.BaseTestCase):
             timeout=2, warn_only=True, abort_on_prompts=True)
 
         mexecute.reset_mock()
+        mmakedirs.reset_mock()
         driver = shotgun.driver.Driver({}, conf)
         driver.get(remote_path, target_path)
-        self.assertEqual(mexecute.mock_calls, [
-            mock.call('mkdir -p "{0}"'.format(target_path)),
-            mock.call('cp -r "{0}" "{1}"'.format(remote_path, target_path))])
+        mmakedirs.assert_called_once_with(target_path)
+        mexecute.assert_called_with('ln -s "{}" "{}"'.format(remote_path,
+                                                             target_path))
 
     def test_use_timeout_from_global_conf(self):
         data = {}
@@ -252,31 +255,11 @@ class TestFile(base.BaseTestCase):
 
         mget.assert_called_with(data["path"], target_path)
 
-    @mock.patch('shotgun.driver.utils.remove')
-    @mock.patch('shotgun.driver.Driver.get')
-    def test_dir_exclude_called(self, mget, mremove):
-        data = {
-            "type": "dir",
-            "path": "/remote_dir/",
-            "exclude": ["*test"],
-            "host": {
-                "hostname": "remote_host",
-                "address": "10.109.0.2",
-            },
-        }
-        conf = mock.MagicMock()
-        conf.target = "/target"
-        dir_driver = shotgun.driver.Dir(data, conf)
-
-        target_path = "/target/remote_host/remote_dir"
-        dir_driver.snapshot()
-
-        mget.assert_called_with(data["path"], target_path)
-        mremove.assert_called_with(dir_driver.full_dst_path, data['exclude'])
-
 
 class TestCommand(base.BaseTestCase):
     def setUp(self):
+        super(TestCommand, self).setUp()
+
         self.conf = mock.Mock()
         self.conf.target = '/some/dir'
 
@@ -369,6 +352,8 @@ class TestCommand(base.BaseTestCase):
 
 class TestDockerCommand(base.BaseTestCase):
     def setUp(self):
+        super(TestDockerCommand, self).setUp()
+
         self.conf = mock.Mock()
         self.conf.target = '/some/dir'
 
