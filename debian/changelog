@@ -1,3 +1,9 @@
+python-shotgun (9.0-3) unstable; urgency=medium
+
+  * Add missing build-depends-indep: python-crypto (Closes: #830397).
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 11 Jul 2016 13:56:57 +0200
+
 python-shotgun (9.0-2) unstable; urgency=medium
 
   * Add missing python-oslotest in build-depends-indep (Closes: #825167).
