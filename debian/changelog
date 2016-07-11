@@ -1,6 +1,7 @@
 python-shotgun (9.0-3) unstable; urgency=medium
 
   * Add missing build-depends-indep: python-crypto (Closes: #830397).
+  * Do not test with Py3.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 11 Jul 2016 13:56:57 +0200
 
