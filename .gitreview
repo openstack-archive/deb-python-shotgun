@@ -1,4 +1,5 @@
 [gerrit]
 host=review.openstack.org
 port=29418
-project=openstack/shotgun.git
+project=openstack/deb-python-shotgun.git
+defaultbranch=debian/newton
